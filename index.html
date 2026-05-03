@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leitura Rápida Mágica</title>
-    <!-- Importar fontes do Google -->
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Comic+Neue:wght@700&family=Lora:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <!-- Importar fontes do Google (Incluindo a nova fonte manuscrita ligada) -->
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Dancing+Script:wght@700&family=Lora:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f4f9f4; /* Fundo geral muito suave */
+            --bg-color: #f4f9f4; 
             --panel-bg: #ffffff;
-            --reading-bg: #fffdf2; /* Fundo creme personalizável */
-            --text-reading-color: #2c3e50; /* Cor do texto personalizável */
-            --speed: 30s; /* Velocidade base ajustada para textos longos */
-            --font-size: 80px; /* Tamanho base enorme */
+            --reading-bg: #fffdf2; 
+            --text-reading-color: #2c3e50; 
+            --speed: 30s; 
+            --font-size: 120px; /* Tamanho inicial muito maior */
             --font-family: 'Comic Neue', cursive;
         }
 
@@ -26,7 +26,7 @@
             flex-direction: column;
             height: 100vh;
             color: #333;
-            overflow: hidden; /* Remove o scroll da página */
+            overflow: hidden; 
         }
 
         /* Painel de Controlo Compacto */
@@ -58,7 +58,6 @@
             cursor: pointer;
         }
 
-        /* Estilo específico para as caixas de cor */
         input[type="color"] {
             width: 35px;
             padding: 0;
@@ -112,22 +111,22 @@
             position: relative;
             display: flex;
             align-items: center;
-            overflow: hidden; /* Essencial para o texto desaparecer nas bordas */
-            border-top: 6px dashed #ffd700;
-            border-bottom: 6px dashed #ffd700;
+            overflow: hidden; 
+            /* Nova borda contínua à volta de todo o ecrã de leitura */
+            border: 6px solid #ffd700;
             margin: 20px;
             border-radius: 25px;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
         }
 
         #scrolling-text {
-            white-space: nowrap; /* Impede o texto de quebrar de linha */
+            white-space: nowrap; 
             position: absolute;
             font-size: var(--font-size);
             font-family: var(--font-family);
             color: var(--text-reading-color);
             
-            /* Anti-tremido (Aceleração Gráfica) */
+            /* Anti-tremido */
             will-change: transform;
             -webkit-font-smoothing: antialiased;
             text-rendering: optimizeLegibility;
@@ -136,7 +135,6 @@
             animation: scrollText var(--speed) linear infinite;
         }
 
-        /* Animação com translate3d para fluidez perfeita */
         @keyframes scrollText {
             0% { left: 100%; transform: translate3d(0, 0, 0); }
             100% { left: 0; transform: translate3d(-100%, 0, 0); }
@@ -164,7 +162,8 @@
 
         <div class="control-group">
             <label for="size-slider">🔍 Letra:</label>
-            <input type="range" id="size-slider" min="40" max="180" value="80" title="Ajusta o tamanho das letras">
+            <!-- Barra invertida (dir="rtl") com máximo aumentado para suportar letras ainda maiores -->
+            <input type="range" id="size-slider" min="40" max="250" value="120" dir="rtl" title="Ajusta o tamanho das letras">
         </div>
 
         <div class="control-group">
@@ -172,7 +171,8 @@
             <select id="font-select">
                 <option value="'Comic Neue', cursive">Escola Básica</option>
                 <option value="'Lora', serif">Livro Clássico</option>
-                <option value="'Caveat', cursive">Manuscrito (Portugal)</option>
+                <!-- Fonte manuscrita de caligrafia escolar atualizada -->
+                <option value="'Dancing Script', cursive">Manuscrito Escolar</option>
             </select>
         </div>
 
@@ -208,7 +208,7 @@
     </div>
 
     <script>
-        // BANCO DE HISTÓRIAS (Mais longas e elaboradas)
+        // BANCO DE HISTÓRIAS
         const textosMagicos = {
             dinossauros: [
                 "Era uma vez um pequeno T-Rex chamado Dino que adorava brincar às escondidas, mas como tinha uma cauda gigante, os seus amigos descobriam-no sempre atrás das árvores da floresta húmida.",
