@@ -10,9 +10,9 @@
         :root {
             --bg-color: #f4f9f4; /* Fundo geral muito suave */
             --panel-bg: #ffffff;
-            --text-color: #333;
-            --reading-bg: #fffdf2; /* Fundo creme claro para descanso visual */
-            --speed: 15s; /* Velocidade base */
+            --reading-bg: #fffdf2; /* Fundo creme personalizável */
+            --text-reading-color: #2c3e50; /* Cor do texto personalizável */
+            --speed: 30s; /* Velocidade base ajustada para textos longos */
             --font-size: 80px; /* Tamanho base enorme */
             --font-family: 'Comic Neue', cursive;
         }
@@ -25,7 +25,7 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            color: var(--text-color);
+            color: #333;
             overflow: hidden; /* Remove o scroll da página */
         }
 
@@ -36,7 +36,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
             justify-content: center;
             z-index: 10;
@@ -45,17 +45,25 @@
         .control-group {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 15px;
+            gap: 6px;
+            font-size: 14px;
             font-weight: bold;
             color: #555;
         }
 
-        input[type="range"], select {
+        input[type="range"], select, input[type="color"] {
             height: 28px;
             border-radius: 6px;
             border: 1px solid #ddd;
             cursor: pointer;
+        }
+
+        /* Estilo específico para as caixas de cor */
+        input[type="color"] {
+            width: 35px;
+            padding: 0;
+            border: none;
+            background: none;
         }
 
         textarea {
@@ -74,7 +82,7 @@
 
         .buttons-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
         }
 
@@ -82,8 +90,8 @@
             background-color: #ffd700;
             border: none;
             border-radius: 8px;
-            padding: 6px 12px;
-            font-size: 22px;
+            padding: 6px 10px;
+            font-size: 20px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: all 0.1s;
@@ -117,19 +125,25 @@
             position: absolute;
             font-size: var(--font-size);
             font-family: var(--font-family);
-            color: #2c3e50;
-            /* A animação usa a variável de velocidade CSS */
+            color: var(--text-reading-color);
+            
+            /* Anti-tremido (Aceleração Gráfica) */
+            will-change: transform;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            backface-visibility: hidden;
+            
             animation: scrollText var(--speed) linear infinite;
         }
 
-        /* Animação: começa à direita do ecrã e vai até a totalidade do texto sair pela esquerda */
+        /* Animação com translate3d para fluidez perfeita */
         @keyframes scrollText {
-            0% { left: 100%; transform: translateX(0); }
-            100% { left: 0; transform: translateX(-100%); }
+            0% { left: 100%; transform: translate3d(0, 0, 0); }
+            100% { left: 0; transform: translate3d(-100%, 0, 0); }
         }
 
         /* Ajustes para Telemóvel */
-        @media (max-width: 800px) {
+        @media (max-width: 900px) {
             #control-panel { flex-direction: column; align-items: stretch; gap: 12px; padding: 15px; }
             .control-group, .buttons-group { justify-content: space-between; width: 100%; }
             textarea { width: 100%; }
@@ -144,23 +158,32 @@
     <div id="control-panel">
         
         <div class="control-group">
-            <label for="speed-slider">🏃 Velocidade:</label>
-            <!-- dir="rtl" inverte o slider: andar para a direita diminui os segundos (anda mais rápido) -->
-            <input type="range" id="speed-slider" min="5" max="35" value="15" dir="rtl" title="Ajusta o ritmo de leitura"> 
+            <label for="speed-slider">🏃 Tempo:</label>
+            <input type="range" id="speed-slider" min="10" max="90" value="30" dir="rtl" title="Ajusta o ritmo de leitura"> 
         </div>
 
         <div class="control-group">
-            <label for="size-slider">🔍 Tamanho:</label>
+            <label for="size-slider">🔍 Letra:</label>
             <input type="range" id="size-slider" min="40" max="180" value="80" title="Ajusta o tamanho das letras">
         </div>
 
         <div class="control-group">
-            <label for="font-select">✍️ Letra:</label>
+            <label for="font-select">✍️ Fonte:</label>
             <select id="font-select">
                 <option value="'Comic Neue', cursive">Escola Básica</option>
                 <option value="'Lora', serif">Livro Clássico</option>
                 <option value="'Caveat', cursive">Manuscrito (Portugal)</option>
             </select>
+        </div>
+
+        <div class="control-group">
+            <label for="text-color">🖍️ Cor:</label>
+            <input type="color" id="text-color" value="#2c3e50" title="Cor do texto">
+        </div>
+
+        <div class="control-group">
+            <label for="bg-color">🎨 Fundo:</label>
+            <input type="color" id="bg-color" value="#fffdf2" title="Cor do fundo">
         </div>
 
         <div class="divider"></div>
@@ -181,39 +204,39 @@
 
     <!-- ÁREA DE LEITURA -->
     <div id="reading-area">
-        <div id="scrolling-text">Olá! Clica nos botões mágicos lá em cima para começarmos a ler!</div>
+        <div id="scrolling-text">Olá! Clica nos botões mágicos lá em cima para lermos uma história nova!</div>
     </div>
 
     <script>
-        // BANCO DE TEXTOS (Escritos em Português de Portugal)
+        // BANCO DE HISTÓRIAS (Mais longas e elaboradas)
         const textosMagicos = {
             dinossauros: [
-                "O T-Rex tinha dentes muito afiados, mas os braços eram curtinhos.",
-                "Os dinossauros viveram no nosso planeta há milhões de anos.",
-                "O Triceratops tinha três chifres na cabeça para se proteger.",
-                "Sabias que alguns dinossauros tinham penas coloridas como os pássaros?",
-                "O Braquiossauro tinha um pescoço gigante para comer as folhas mais altas."
+                "Era uma vez um pequeno T-Rex chamado Dino que adorava brincar às escondidas, mas como tinha uma cauda gigante, os seus amigos descobriam-no sempre atrás das árvores da floresta húmida.",
+                "Há muitos milhões de anos, o valente Triceratops acordou com muita fome e caminhou pelo vale até encontrar um arbusto cheio das folhas verdes e suculentas de que ele tanto gostava.",
+                "O Braquiossauro era tão alto, mas tão alto, que o seu pescoço parecia um escorrega gigante. Ele adorava comer as folhas fresquinhas que ficavam no topo das árvores mais altas da montanha.",
+                "Numa tarde de muito calor, um dinossauro voador chamado Pterodáctilo abriu as suas enormes asas e voou por cima dos vulcões adormecidos para procurar peixe no rio cristalino.",
+                "A mãe Estegossauro tinha umas placas muito esquisitas nas costas que mudavam de cor quando ela estava zangada, mas hoje estavam cor-de-rosa porque ela estava muito feliz a brincar com as suas crias."
             ],
             espaco: [
-                "A Lua gira à volta da Terra e brilha no céu escuro.",
-                "O Sol é uma estrela gigante e muito quente que nos dá luz.",
-                "Marte é conhecido como o planeta vermelho por causa da sua poeira.",
-                "Os astronautas flutuam nas naves porque no espaço não há gravidade.",
-                "Saturno é um planeta muito bonito que tem anéis brilhantes."
+                "O astronauta João vestiu o seu fato espacial brilhante, colocou o capacete redondo, entrou no foguetão prateado e descolou em direção às estrelas para tentar descobrir se a Lua era mesmo feita de queijo.",
+                "Na galáxia distante, o planeta Marte estava muito triste porque era sempre chamado de planeta vermelho, até que um robot explorador com rodas pequenas lhe fez cócegas nas pedras e o fez sorrir.",
+                "Os anéis de Saturno são feitos de milhões de pedrinhas de gelo brilhantes que rodam a alta velocidade, parecendo uma pista de patinagem mágica onde os extraterrestres gostam de brincar às escondidas.",
+                "Durante a noite estrelada, uma pequena estrela cadente atravessou o céu muito depressa, deixando um rasto de poeira mágica e permitindo que todas as crianças da Terra fizessem um pedido especial.",
+                "A nossa galáxia chama-se Via Láctea e parece um remoinho gigante cheio de luzes a piscar. É tão grande que nem a nave espacial mais rápida do mundo conseguiria percorrê-la numa vida inteira."
             ],
             musica: [
-                "O piano tem muitas teclas brancas e pretas que fazem sons lindos.",
-                "A guitarra tem seis cordas que vibram quando tocamos nelas.",
-                "O tambor faz um som muito forte e ajuda a marcar o ritmo da festa.",
-                "As notas musicais sobem e descem para formar uma melodia bonita.",
-                "Cantar ajuda a ficar feliz e a partilhar alegria com os amigos."
+                "Na grande escola de música da floresta, o urso pardo tocava o tambor com muita força usando as suas patas enormes, enquanto o passarinho amarelo cantava melodias fininhas e muito doces.",
+                "O velho piano de cauda do avô tinha teclas brancas e pretas que pareciam dentes mágicos. Quando carregávamos nelas com cuidado, ouviam-se sons tão bonitos que faziam o cão da família adormecer no tapete.",
+                "Num concerto muito animado, o macaco pegou na guitarra roxa de seis cordas e começou a tocar tão depressa que todos os outros animais da selva começaram a saltar e a dançar à roda da fogueira.",
+                "A menina pegou na sua flauta prateada, respirou fundo e soprou suavemente, criando uma música que parecia o som do vento a bater nas folhas do outono que caíam espalhadas pelo jardim de casa.",
+                "O maestro da orquestra levantou a sua batuta fina de madeira, e de repente todos os violinos, violoncelos e trompetes começaram a tocar juntos uma canção que encheu a sala inteira de alegria."
             ],
             adivinhas: [
-                "O que é que cai em pé e corre deitado? É a chuva!",
-                "Qual é a coisa qual é ela que tem dentes mas não morde? É o alho!",
-                "O que é que quanto mais cresce menos se vê? É a escuridão!",
-                "Tem coroa mas não é rei, tem escamas mas não é peixe. É o ananás!",
-                "O que é que tem de ser partido antes de ser usado? É o ovo!"
+                "Sou uma casa muito especial e redondinha. Não tenho portas nem janelas, as minhas paredes são brancas e amarelas e quem me quiser abrir tem de me partir na borda da panela. Quem sou eu? Sou o ovo!",
+                "Tenho uma coroa bonita mas não sou nenhum rei. Tenho o corpo cheio de escamas duras mas não sou um peixe a nadar no mar. Sou muito docinho por dentro e faço sumos maravilhosos. Sou o ananás!",
+                "Corro muito depressa mas não tenho pernas. Assobio muito alto mas não tenho boca. Consigo levantar as folhas do chão mas ninguém me consegue ver nem agarrar com as mãos. Quem sou eu? Sou o vento!",
+                "Nasço no meio das nuvens cinzentas e caio em pé no chão. Passo a vida a correr deitada pelas ruas até chegar ao mar grande e gosto de fazer crescer as plantas do teu jardim. Quem sou eu? Sou a chuva!",
+                "Tenho quatro pernas fortes mas nunca consigo andar sozinha. Tenho umas costas onde te podes encostar, mas não falo nem respiro. Gosto de ficar à volta da mesa à espera da hora do jantar. Sou a cadeira!"
             ]
         };
 
@@ -225,6 +248,8 @@
         const speedSlider = document.getElementById('speed-slider');
         const sizeSlider = document.getElementById('size-slider');
         const fontSelect = document.getElementById('font-select');
+        const textColorPicker = document.getElementById('text-color');
+        const bgColorPicker = document.getElementById('bg-color');
 
         // EVENTOS DOS CONTROLOS
         // Atualizar Velocidade
@@ -242,6 +267,16 @@
             root.style.setProperty('--font-family', e.target.value);
         });
 
+        // Atualizar Cor do Texto
+        textColorPicker.addEventListener('input', (e) => {
+            root.style.setProperty('--text-reading-color', e.target.value);
+        });
+
+        // Atualizar Cor do Fundo
+        bgColorPicker.addEventListener('input', (e) => {
+            root.style.setProperty('--reading-bg', e.target.value);
+        });
+
         // Atualizar Texto quando o utilizador escreve
         customTextArea.addEventListener('input', (e) => {
             if (e.target.value.trim() !== '') {
@@ -250,7 +285,6 @@
         });
 
         // FUNÇÕES MÁGICAS
-        // Escolhe um texto aleatório da categoria e coloca a passar
         function setRandomText(tema) {
             const lista = textosMagicos[tema];
             const textoSorteado = lista[Math.floor(Math.random() * lista.length)];
@@ -269,5 +303,3 @@
     </script>
 </body>
 </html>
-
-```
